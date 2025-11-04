@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { createAssetUrl, logoImage } from "./images";
 
-// export const defaultUrl = "https://connect.farverse.games";
-export const defaultUrl =
-  "https://generate-purchases-crown-jobs.trycloudflare.com";
+export const defaultUrl = "https://fcconnect.xyz";
 export const defaultTitle = "Farcaster Connect";
 export const defaultDescription =
   "Connect to external apps with your Farcaster wallet";
