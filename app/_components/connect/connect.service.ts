@@ -43,16 +43,13 @@ export const connect = async () => {
     throw new Error("No connect URI");
   }
 
-  try {
-    toast.loading("Connecting to dApp...");
-    await kit.pair({ uri: connectUri });
-    // Status will be set to "connected" by the session_proposal listener
-  } catch (error) {
-    console.error("Failed to connect:", error);
-    toast.error("Failed to connect to dApp");
-    setStatus("idle");
-    throw error;
-  }
+  return toast.promise(kit.pair({ uri: connectUri }), {
+    loading: "Connecting to dApp...",
+    error: () => {
+      setStatus("idle");
+      return "Failed to connect to dApp";
+    },
+  });
 };
 
 export const getSessions = async () => {
@@ -152,9 +149,10 @@ const setupListeners = async (
     });
 
     // Show toast for new transaction request
-    const methodLabel = request.method === "eth_sendTransaction"
-      ? "transaction"
-      : request.method === "personal_sign"
+    const methodLabel =
+      request.method === "eth_sendTransaction"
+        ? "transaction"
+        : request.method === "personal_sign"
         ? "signature"
         : "request";
     toast.info(`New ${methodLabel} request`);
@@ -168,7 +166,9 @@ const setupListeners = async (
         .getState()
         .updateTransactionStatus(String(id), "approved", result);
 
-      toast.success(`${methodLabel.charAt(0).toUpperCase() + methodLabel.slice(1)} approved`);
+      toast.success(
+        `${methodLabel.charAt(0).toUpperCase() + methodLabel.slice(1)} approved`
+      );
 
       await kit.respondSessionRequest({
         topic,
@@ -189,7 +189,9 @@ const setupListeners = async (
           error.message || "User rejected"
         );
 
-      toast.error(`${methodLabel.charAt(0).toUpperCase() + methodLabel.slice(1)} rejected`);
+      toast.error(
+        `${methodLabel.charAt(0).toUpperCase() + methodLabel.slice(1)} rejected`
+      );
 
       await kit.respondSessionRequest({
         topic,
