@@ -8,13 +8,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useConnectStore } from "../connect/connect.store";
+import { switchChain } from "../connect/connect.service";
 import { SUPPORTED_CHAINS } from "./chain.config";
 
 export const ChainSelector = () => {
-  const { currentChain, setCurrentChain } = useConnectStore();
+  const currentChain = useConnectStore((state) => state.currentChain);
+
+  const handleChainChange = async (chainId: string) => {
+    try {
+      await switchChain(chainId);
+    } catch (error) {
+      console.error("Failed to switch chain:", error);
+    }
+  };
 
   return (
-    <Select value={currentChain} onValueChange={setCurrentChain}>
+    <Select value={currentChain} onValueChange={handleChainChange}>
       <SelectTrigger className="min-w-fit">
         <SelectValue placeholder="Select a chain" />
       </SelectTrigger>

@@ -72,6 +72,40 @@ export const disconnectSession = async (topic: string) => {
   }
 };
 
+export const switchChain = async (chainId: string) => {
+  const provider = sdk.wallet.ethProvider;
+  if (!provider) {
+    toast.error("Farcaster provider not found");
+    throw new Error("Farcaster provider not found");
+  }
+
+  try {
+    // Get the numeric chain ID from the CAIP-2 format (eip155:1 -> 1)
+    const numericChainId = parseInt(chainId.split(":")[1]);
+    const hexChainId = `0x${numericChainId.toString(16)}`;
+
+    // Request chain switch from the Farcaster wallet
+    // This will automatically emit the chainChanged event to all connected dApps
+    await provider.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: hexChainId }],
+    });
+
+    toast.success("Chain switched");
+    useConnectStore.getState().setCurrentChain(chainId);
+  } catch (error: any) {
+    console.error("Failed to switch chain:", error);
+
+    // If the chain is not added to the wallet, try adding it
+    if (error.code === 4902) {
+      toast.error("Chain not available in Farcaster wallet");
+    } else {
+      toast.error("Failed to switch chain");
+    }
+    throw error;
+  }
+};
+
 const setupListeners = async (
   kit: Awaited<ReturnType<typeof WalletKit.init>>
 ) => {
