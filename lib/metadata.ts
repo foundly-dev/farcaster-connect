@@ -113,10 +113,10 @@ export const createMetadata = (config: {
         version: "next",
         imageUrl: defaultEmbedImage,
         button: {
-          title: `Enter the Warpverse!`,
+          title: `Farcaster Connect`,
           action: {
             type: "launch_frame",
-            name: "Enter the Warpverse!",
+            name: "Farcaster Connect",
             url: defaultCanonicalUrl,
             splashImageUrl: defaultSplashImage,
             splashBackgroundColor: defaultColor,
