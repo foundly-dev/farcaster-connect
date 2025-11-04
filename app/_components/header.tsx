@@ -36,6 +36,7 @@ export const Header = () => {
                   (recommended in incognito to prevent session issues)
                 </span>
               </li>
+              <li>Select “Wallet Connect” as sign in option</li>
               <li>Click &quot;Connect to App&quot;</li>
               <li>Scan QR Code</li>
               <li>Sign &amp; Transact</li>
