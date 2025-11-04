@@ -19,5 +19,5 @@ export const logoImage = (
   size: "512" | "256" | "128" | "64" | "transparent" = "64",
   type: "png" = "png"
 ) => {
-  return createAssetUrl(`/logos/connect_${size}.${type}`);
+  return createAssetUrl(`/logo/connect_${size}.${type}`);
 };
