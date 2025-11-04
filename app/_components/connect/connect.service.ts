@@ -2,6 +2,7 @@ import { WalletKit } from "@reown/walletkit";
 import { Core } from "@walletconnect/core";
 import { buildApprovedNamespaces, getSdkError } from "@walletconnect/utils";
 import { sdk } from "@farcaster/miniapp-sdk";
+import { toast } from "sonner";
 import { useConnectStore } from "./connect.store";
 import { useTransactionsStore } from "../transactions/transactions.store";
 import { SUPPORTED_CHAINS } from "../chain/chain.config";
@@ -38,15 +39,38 @@ export const connect = async () => {
   const { connectUri, setStatus } = useConnectStore.getState();
 
   if (!connectUri) {
+    toast.error("No connection URI provided");
     throw new Error("No connect URI");
   }
 
   try {
+    toast.loading("Connecting to dApp...");
     await kit.pair({ uri: connectUri });
     // Status will be set to "connected" by the session_proposal listener
   } catch (error) {
     console.error("Failed to connect:", error);
+    toast.error("Failed to connect to dApp");
     setStatus("idle");
+    throw error;
+  }
+};
+
+export const getSessions = async () => {
+  const kit = await walletKit();
+  return kit.getActiveSessions();
+};
+
+export const disconnectSession = async (topic: string) => {
+  const kit = await walletKit();
+  try {
+    await kit.disconnectSession({
+      topic,
+      reason: getSdkError("USER_DISCONNECTED"),
+    });
+    toast.success("Session disconnected");
+  } catch (error) {
+    console.error("Failed to disconnect session:", error);
+    toast.error("Failed to disconnect session");
     throw error;
   }
 };
@@ -100,9 +124,12 @@ const setupListeners = async (
         namespaces: approvedNamespaces,
       });
 
+      const dAppName = params.proposer.metadata.name || "dApp";
+      toast.success(`Connected to ${dAppName}`);
       useConnectStore.getState().setStatus("connected");
     } catch (error) {
       console.error("Failed to approve session:", error);
+      toast.error("Failed to approve session");
       await kit.rejectSession({
         id,
         reason: getSdkError("USER_REJECTED_METHODS"),
@@ -124,6 +151,14 @@ const setupListeners = async (
       params: request.params,
     });
 
+    // Show toast for new transaction request
+    const methodLabel = request.method === "eth_sendTransaction"
+      ? "transaction"
+      : request.method === "personal_sign"
+        ? "signature"
+        : "request";
+    toast.info(`New ${methodLabel} request`);
+
     try {
       // Proxy the request directly to the Farcaster wallet
       const result = await provider.request(request);
@@ -132,6 +167,8 @@ const setupListeners = async (
       useTransactionsStore
         .getState()
         .updateTransactionStatus(String(id), "approved", result);
+
+      toast.success(`${methodLabel.charAt(0).toUpperCase() + methodLabel.slice(1)} approved`);
 
       await kit.respondSessionRequest({
         topic,
@@ -152,6 +189,8 @@ const setupListeners = async (
           error.message || "User rejected"
         );
 
+      toast.error(`${methodLabel.charAt(0).toUpperCase() + methodLabel.slice(1)} rejected`);
+
       await kit.respondSessionRequest({
         topic,
         response: {
@@ -165,6 +204,7 @@ const setupListeners = async (
 
   // Listen for disconnect
   kit.on("session_delete", () => {
+    toast.info("Session disconnected");
     useConnectStore.getState().setStatus("disconnected");
   });
 };

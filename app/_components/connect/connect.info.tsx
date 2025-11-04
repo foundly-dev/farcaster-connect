@@ -77,9 +77,11 @@ export const ConnectInfo = () => {
         )}
 
         <div className="text-center">
-          <p className="font-semibold text-lg">{peer.metadata.name}</p>
+          <p className="font-semibold text-lg line-clamp-1">
+            {peer.metadata.name}
+          </p>
           {peer.metadata.description && (
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-3 max-w-full">
               {peer.metadata.description}
             </p>
           )}
