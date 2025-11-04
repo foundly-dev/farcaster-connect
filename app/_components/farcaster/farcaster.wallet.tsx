@@ -51,34 +51,32 @@ export const FarcasterWallet = () => {
   }
 
   return (
-    <Card className="w-full">
-      <CardContent className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          {userContext?.pfpUrl && (
-            <img
-              src={userContext.pfpUrl}
-              alt={userContext.username || "User"}
-              className="size-12 rounded-full"
-            />
+    <div className="flex items-center justify-between gap-3 w-full">
+      <div className="flex items-center gap-3">
+        {userContext?.pfpUrl && (
+          <img
+            src={userContext.pfpUrl}
+            alt={userContext.username || "User"}
+            className="size-12 rounded-full"
+          />
+        )}
+        <div className="flex flex-col">
+          {userContext?.displayName && (
+            <p className="font-semibold text-sm">{userContext.displayName}</p>
           )}
-          <div className="flex flex-col">
-            {userContext?.displayName && (
-              <p className="font-semibold text-sm">{userContext.displayName}</p>
-            )}
-            {userContext?.username && (
-              <p className="text-xs text-muted-foreground">
-                @{userContext.username}
-              </p>
-            )}
-            {walletAddress && (
-              <p className="text-xs text-muted-foreground font-mono">
-                {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-              </p>
-            )}
-          </div>
+          {userContext?.username && (
+            <p className="text-xs text-muted-foreground">
+              @{userContext.username}
+            </p>
+          )}
+          {walletAddress && (
+            <p className="text-xs text-muted-foreground font-mono">
+              {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+            </p>
+          )}
         </div>
-        <ChainSelector />
-      </CardContent>
-    </Card>
+      </div>
+      <ChainSelector />
+    </div>
   );
 };

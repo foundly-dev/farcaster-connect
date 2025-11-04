@@ -14,7 +14,7 @@ export const Header = () => {
 
   return (
     <div className="w-full flex flex-col items-center gap-4">
-      <h1 className="text-4xl font-bold text-center">Farcaster Connect</h1>
+      {/* <h1 className="text-4xl font-bold text-center">Farcaster Connect</h1> */}
 
       {showInfo && (
         <Alert className="w-full relative">
@@ -27,16 +27,21 @@ export const Header = () => {
           >
             <X className="h-4 w-4" />
           </Button>
-          <AlertTitle>How to Connect</AlertTitle>
+          <AlertTitle className="font-extrabold">How to Connect</AlertTitle>
           <AlertDescription>
-            <ol className="list-decimal list-inside space-y-1 mt-2">
+            <h3 className="font-bold text-foreground">On Desktop</h3>
+            <ol className="list-decimal list-inside space-y-1">
               <li>
                 Open a dApp (like OpenSea) on your desktop{" "}
                 <span className="text-muted-foreground">
-                  (recommended in incognito to prevent session issues)
+                  (recommended in incognito mode)
                 </span>
+                <li>Select “Wallet Connect” as sign in option</li>
               </li>
-              <li>Select “Wallet Connect” as sign in option</li>
+            </ol>
+
+            <h3 className="font-bold text-foreground">In Mini App</h3>
+            <ol className="list-decimal list-inside space-y-1">
               <li>Click &quot;Connect to App&quot;</li>
               <li>Scan QR Code</li>
               <li>Sign &amp; Transact</li>

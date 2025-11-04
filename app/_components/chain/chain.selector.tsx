@@ -15,7 +15,7 @@ export const ChainSelector = () => {
 
   return (
     <Select value={currentChain} onValueChange={setCurrentChain}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="min-w-fit">
         <SelectValue placeholder="Select a chain" />
       </SelectTrigger>
       <SelectContent>
